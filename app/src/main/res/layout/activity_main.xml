@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.boge.calendar.MainActivity">
+
+    <com.boge.library.CalendarDateView
+        android:id="@+id/calendarDateView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <!--<com.boge.library.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/wihte"/>-->
+    </com.boge.library.CalendarDateView>
+    <TextView
+        android:layout_below="@+id/calendarDateView"
+        android:layout_above="@+id/prev"
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:textSize="24sp"/>
+    <Button
+        android:layout_above="@+id/next"
+        android:id="@+id/prev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="上一月"/>
+    <Button
+        android:layout_alignParentBottom="true"
+        android:id="@+id/next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="下一月"/>
+</RelativeLayout>
