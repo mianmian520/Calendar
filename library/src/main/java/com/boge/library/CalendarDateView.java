@@ -7,9 +7,11 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import static com.boge.library.CalendarFactory.getMonthOfDayList;
 
@@ -33,6 +35,8 @@ public class CalendarDateView extends ViewPager {
 
     private int[] date;
 
+    private List<String> stars = new ArrayList<String>();
+
     public CalendarDateView(Context context) {
         super(context);
     }
@@ -46,6 +50,11 @@ public class CalendarDateView extends ViewPager {
         setCurrentItem(Integer.MAX_VALUE/2, false);
         getAdapter().notifyDataSetChanged();
 
+    }
+
+    public void setStars(List<String> stars) {
+        this.stars = stars;
+        getAdapter().notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(CalendarView.OnItemClickListener onItemClickListener) {
@@ -98,7 +107,9 @@ public class CalendarDateView extends ViewPager {
                 view.setOnItemClickListener(onItemClickListener);
 
                 view.setData(getMonthOfDayList(dateArr[0],dateArr[1]+position-Integer.MAX_VALUE/2),position==Integer.MAX_VALUE/2);
-
+                if(stars.size()>0){
+                    view.setStars(stars);
+                }
                 container.addView(view);
                 views.put(position, view);
 

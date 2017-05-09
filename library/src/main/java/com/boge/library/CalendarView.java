@@ -8,9 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +34,8 @@ public class CalendarView extends ViewGroup {
 
     private List<CalendarBean> data;
     private OnItemClickListener onItemClickListener;
+
+    private List<String> stars = new ArrayList<String>();
 
     private int row = 6;
     private int column = 7;
@@ -57,7 +64,13 @@ public class CalendarView extends ViewGroup {
         setWillNotDraw(false);
     }
 
-    public void setData(List<CalendarBean> data,boolean isToday) {
+    public void setStars(List<String> stars) {
+        this.stars = stars;
+        setItem();
+        requestLayout();
+    }
+
+    public void setData(List<CalendarBean> data, boolean isToday) {
         this.data = data;
         this.isToday=isToday;
         setItem();
@@ -75,7 +88,34 @@ public class CalendarView extends ViewGroup {
         if(childAt == null || childAt != view1){
             addViewInLayout(view1, 0, view1.getLayoutParams(), true);
         }
-
+        List<String> stars1 = new ArrayList<String>();
+        CalendarBean cb = data.get(10);
+        for (String star : stars){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                Date date = sdf.parse(star);
+                int[] ymd = CalendarUtil.getYMD(date);
+                if(cb.year == ymd[0] && cb.moth == ymd[1]){
+                    stars1.add(star);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        for (int i = 0; i < data.size(); i++) {
+            for (String star : stars1){
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    Date date = sdf.parse(star);
+                    int[] ymd = CalendarUtil.getYMD(date);
+                    if(data.get(i).year == ymd[0] && data.get(i).moth == ymd[1] && data.get(i).day == ymd[2]){
+                        data.get(i).hasEvent = true;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         for (int i = 0; i < data.size(); i++) {
             CalendarBean bean = data.get(i);
             View view = getChildAt(i);
@@ -84,12 +124,17 @@ public class CalendarView extends ViewGroup {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(px(48), px(48));
             chidView.setLayoutParams(params);
             TextView textView = (TextView) chidView.findViewById(R.id.text);
+            RelativeLayout rv_day = (RelativeLayout) chidView.findViewById(R.id.rv_day);
+            ImageView iv_star = (ImageView) chidView.findViewById(R.id.iv_star);
 
             textView.setText("" + bean.day);
             if (bean.mothFlag != 0) {
                 textView.setTextColor(0xff9299a1);
-                textView.setVisibility(View.INVISIBLE);
+                rv_day.setVisibility(View.GONE);
             } else {
+                if(bean.hasEvent){
+                    iv_star.setVisibility(View.VISIBLE);
+                }
                 textView.setTextColor(Color.BLACK);
             }
             int[]date=CalendarUtil.getYMD(new Date());
@@ -118,28 +163,35 @@ public class CalendarView extends ViewGroup {
     }
 
     public void setItemClick(final View view, final int potsion, final CalendarBean bean) {
-        view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        try {
+            RelativeLayout rv_day = (RelativeLayout) view.findViewById(R.id.rv_day);
+            if(rv_day.getVisibility() != View.GONE){
+                view.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                if (selectPostion != -1) {
-                    getChildAt(selectPostion).setSelected(false);
-                    getChildAt(potsion).setSelected(true);
-                }
-                selectPostion = potsion;
-                if (onItemClickListener != null) {
-                    int num = 0;
-                    for (int i = 0 ; i < data.size() ; i++){
-                        if(data.get(i).mothFlag ==0 ){
-                            break;
-                        }else {
-                            num++;
+                        if (selectPostion != -1) {
+                            getChildAt(selectPostion).setSelected(false);
+                            getChildAt(potsion).setSelected(true);
+                        }
+                        selectPostion = potsion;
+                        if (onItemClickListener != null) {
+                            int num = 0;
+                            for (int i = 0 ; i < data.size() ; i++){
+                                if(data.get(i).mothFlag ==0 ){
+                                    break;
+                                }else {
+                                    num++;
+                                }
+                            }
+                            onItemClickListener.onItemClick(view, potsion - num, bean);
                         }
                     }
-                    onItemClickListener.onItemClick(view, potsion - num, bean);
-                }
+                });
             }
-        });
+        }catch (Exception e){
+
+        }
     }
 
     @Override

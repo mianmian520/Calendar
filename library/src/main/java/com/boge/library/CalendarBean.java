@@ -11,6 +11,8 @@ public class CalendarBean {
     //-1,0,1
     public int mothFlag;
 
+    public boolean hasEvent;
+
     //显示
     public String chinaMonth;
     public String chinaDay;

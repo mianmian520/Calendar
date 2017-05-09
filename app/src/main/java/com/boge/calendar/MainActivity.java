@@ -11,7 +11,9 @@ import com.boge.library.CalendarDateView;
 import com.boge.library.CalendarUtil;
 import com.boge.library.CalendarView;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,6 +31,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         calendarDateView.initData();
+        List<String> dates = new ArrayList<String>();
+        dates.add("2017-04-21");
+        dates.add("2017-04-22");
+        dates.add("2017-04-23");
+        dates.add("2017-04-24");
+        dates.add("2017-02-25");
+        dates.add("2017-02-26");
+        dates.add("2017-03-26");
+        dates.add("2017-03-25");
+        calendarDateView.setStars(dates);
         calendarDateView.setOnItemClickListener(new CalendarView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int postion, CalendarBean bean) {
